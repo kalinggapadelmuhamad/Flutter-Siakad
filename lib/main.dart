@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_siakad_app/bloc/login/login_bloc.dart';
+import 'package:flutter_siakad_app/data/datasource/auth_local_datasource.dart';
+import 'package:flutter_siakad_app/pages/auth/_auth.dart';
 import 'package:flutter_siakad_app/pages/auth/_splash.dart';
+import 'package:flutter_siakad_app/pages/mahsiswa/_mahasiswa.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,9 +20,15 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: BlocProvider(
-        create: (context) => LoginBloc(),
-        child: const SplashPage(),
+      home: FutureBuilder<bool>(
+        future: AuthLocalDatasource().isLogin(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData && snapshot.data!) {
+            return const MahasiswaPage();
+          } else {
+            return const AuthPage();
+          }
+        },
       ),
     );
   }
