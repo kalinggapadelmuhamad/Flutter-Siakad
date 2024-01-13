@@ -19,6 +19,7 @@ class CustomTextField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       onChanged: onChanged,
+      keyboardType: TextInputType.emailAddress,
       obscureText: obscureText,
       decoration: InputDecoration(
         labelText: label,
