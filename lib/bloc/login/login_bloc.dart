@@ -1,4 +1,4 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_siakad_app/data/datasource/auth_remote_datasource.dart';
 import 'package:flutter_siakad_app/data/models/request/auth_request_model.dart';
 import 'package:flutter_siakad_app/data/models/response/auth_response_model.dart';

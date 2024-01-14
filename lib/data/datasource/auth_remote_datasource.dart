@@ -26,7 +26,7 @@ class AuthRemoteDataSource {
     }
   }
 
-  Future<Either<String, String>> Logout() async {
+  Future<Either<String, String>> logout() async {
     final headers = {
       'Accept': 'application/json',
       'Content-Type': 'application/json',

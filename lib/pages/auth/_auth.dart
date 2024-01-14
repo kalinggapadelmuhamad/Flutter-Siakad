@@ -6,8 +6,6 @@ import 'package:flutter_siakad_app/common/constants/images.dart';
 import 'package:flutter_siakad_app/pages/auth/widgets/login_bottom_sheet.dart';
 
 import '../../bloc/login/login_bloc.dart';
-import '../dosen/_dosen.dart';
-import '../mahsiswa/_mahasiswa.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
