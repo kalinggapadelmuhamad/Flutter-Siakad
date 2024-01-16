@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_siakad_app/pages/mahsiswa/_absensi_page.dart';
 import 'package:flutter_siakad_app/pages/mahsiswa/_jadwal_matkul.dart';
 import 'package:flutter_siakad_app/pages/mahsiswa/_nilai_mk.dart';
+import 'package:flutter_siakad_app/pages/mahsiswa/widgets/sample_map.dart';
 
 import '../../common/components/menu_card.dart';
 import '../../common/components/search_input.dart';
@@ -37,6 +38,18 @@ class _DashboardPageState extends State<DashboardPage> {
               ),
               Row(
                 children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return const SampleMap();
+                      }));
+                    },
+                    icon: const Icon(
+                      Icons.map,
+                      color: ColorName.primary,
+                    ),
+                  ),
                   IconButton(
                     onPressed: () {
                       Navigator.push(context,

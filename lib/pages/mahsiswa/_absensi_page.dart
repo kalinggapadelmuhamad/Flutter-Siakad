@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dash/flutter_dash.dart';
 import 'package:flutter_siakad_app/common/components/buttons.dart';
 import 'package:flutter_siakad_app/common/components/custom_scaffold.dart';
 import 'package:flutter_siakad_app/common/constants/colors.dart';
 import 'package:flutter_siakad_app/common/constants/icons.dart';
 import 'package:flutter_siakad_app/common/constants/images.dart';
+import 'package:flutter_siakad_app/pages/mahsiswa/widgets/qrcode_page.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 
 class AbsensiPage extends StatefulWidget {
   const AbsensiPage({super.key});
@@ -27,8 +31,64 @@ class _AbsensiPageState extends State<AbsensiPage> {
     const TimeOfDay(hour: 17, minute: 30),
   ];
 
+  late GoogleMapController mapController;
+  double? latitude;
+  double? longitude;
+
+  Future<void> getCurrentPosition() async {
+    try {
+      Location location = Location();
+
+      bool _serviceEnabled;
+      PermissionStatus _permissionGranted;
+      LocationData _locationData;
+
+      _serviceEnabled = await location.serviceEnabled();
+      if (!_serviceEnabled) {
+        _serviceEnabled = await location.requestService();
+        if (!_serviceEnabled) {
+          return;
+        }
+      }
+
+      _permissionGranted = await location.hasPermission();
+      if (_permissionGranted == PermissionStatus.denied) {
+        _permissionGranted = await location.requestPermission();
+        if (_permissionGranted != PermissionStatus.granted) {
+          return;
+        }
+      }
+
+      _locationData = await location.getLocation();
+      latitude = _locationData.latitude;
+      longitude = _locationData.longitude;
+
+      setState(() {});
+    } on PlatformException catch (e) {
+      if (e.code == 'IO_ERROR') {
+        debugPrint(
+            'A network error occurred trying to lookup the supplied coordinates: ${e.message}');
+      } else {
+        debugPrint('Failed to lookup coordinates: ${e.message}');
+      }
+    } catch (e) {
+      debugPrint('An unknown error occurred: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    getCurrentPosition();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    LatLng _center = LatLng(latitude ?? 0, longitude ?? 0);
+    Marker marker = Marker(
+      markerId: const MarkerId("marker_1"),
+      position: LatLng(latitude ?? 0, longitude ?? 0),
+    );
     return CustomScaffold(
       // useExtraPadding: true,
       body: ListView(
@@ -133,20 +193,35 @@ class _AbsensiPageState extends State<AbsensiPage> {
             ),
           ),
           const SizedBox(height: 10.0),
-          Image.asset(
-            Images.maps,
-            height: 184.0,
-            fit: BoxFit.cover,
+          const SizedBox(height: 10.0),
+          // Image.asset(
+          //   Images.maps,
+          //   height: 184.0,
+          //   fit: BoxFit.cover,
+          // ),
+          SizedBox(
+            height: 200,
+            child: latitude == null
+                ? SizedBox()
+                : GoogleMap(
+                    // onMapCreated: _onMapCreated,
+                    initialCameraPosition: CameraPosition(
+                      target: _center,
+                      zoom: 15.0,
+                    ),
+                    markers: {marker},
+                    mapType: MapType.normal,
+                  ),
           ),
           const SizedBox(height: 20.0),
           Button.filled(
             onPressed: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) => const ScanPage(),
-              //   ),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const QrCodePage(),
+                ),
+              );
             },
             label: 'SCAN',
             icon: const ImageIcon(
